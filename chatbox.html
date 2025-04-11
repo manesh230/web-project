@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbox</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Chatbox Container */
+        .chatbox {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            max-height: 400px;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        /* Chat Messages */
+        .chat-body {
+            padding: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Input and Send Button */
+        .chat-footer {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        .chat-footer input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .chat-footer button {
+            margin-left: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .chat-footer button:hover {
+            background: #0056b3;
+        }
+
+        .message {
+            padding: 8px 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .message.user {
+            background-color: #e1f5fe;
+            text-align: right;
+        }
+
+        .message.support {
+            background-color: #f1f8e9;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Chatbox (Always Visible) -->
+    <div class="chatbox" id="chatbox">
+        <div class="chat-header">Chat with Us</div>
+        <div class="chat-body" id="chat-body">
+            <p><strong>Support:</strong> How can I assist you today?</p>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chat-input" placeholder="Type a message..." autofocus>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Notification (Toast) -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Message Sent Successfully!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Check if there are messages in localStorage and load them
+        $(document).ready(function() {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.forEach(function(message) {
+                displayMessage(message);
+            });
+        });
+
+        function sendMessage() {
+            let input = $("#chat-input");
+            let message = input.val().trim();
+
+            if (message) {
+                let userMessage = {
+                    sender: 'user',
+                    text: message,
+                    timestamp: new Date().toISOString()
+                };
+
+                // Display User Message
+                displayMessage(userMessage);
+
+                // Auto Reply from Support
+                let botReply = {
+                    sender: 'support',
+                    text: "We'll get back to you shortly.",
+                    timestamp: new Date().toISOString()
+                };
+                setTimeout(function() {
+                    displayMessage(botReply);
+                    showToast();  // Show notification
+                }, 1000);
+
+                // Clear input field
+                input.val("");
+                // Save messages in localStorage
+                saveMessage(userMessage);
+                saveMessage(botReply);
+            }
+        }
+
+        function displayMessage(message) {
+            let chatBody = $("#chat-body");
+            let msgElement = $("<p></p>").addClass('message').addClass(message.sender);
+            msgElement.html(`<strong>${message.sender === 'user' ? 'You' : 'Support'}:</strong> ${message.text}`);
+            chatBody.append(msgElement);
+            chatBody.scrollTop(chatBody[0].scrollHeight);  // Scroll to the bottom
+        }
+
+        function saveMessage(message) {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        function showToast() {
+            var toast = new bootstrap.Toast(document.getElementById('toast'));
+            toast.show();
+        }
+    </script>
+
+</body>
+</html>

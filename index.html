@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hospital Management System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollreveal/4.0.9/scrollreveal.min.js" defer></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+  <script src="script.js" defer></script>
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: url('https://images.pexels.com/photos/263402/pexels-photo-263402.jpeg') no-repeat center center/cover;
+      overflow-x: hidden;
+    }
+    .navbar {
+      background: rgba(0, 0, 0, 0.8);
+      transition: background 0.3s;
+    }
+    .navbar.scrolled {
+      background: black;
+    }
+    .hero {
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      opacity: 0;
+      transform: translateY(-30px);
+      transition: opacity 1s, transform 1s;
+    }
+    .hero.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .btn-custom {
+      background: #ff4500;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: 0.3s;
+      transform: scale(1);
+    }
+    .btn-custom:hover {
+      background: #e63900;
+      transform: scale(1.1);
+    }
+    .btn-highlight {
+      background: #28a745 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 5px;
+      padding: 10px 15px;
+      transition: transform 0.3s;
+    }
+    .btn-highlight:hover {
+      background: #218838 !important;
+      transform: scale(1.1);
+    }
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+    .fade-in.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Chatbox Button */
+    .chatbox-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+    }
+    .chatbox-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Chatbox (Initially Hidden) */
+    .chatbox {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      height: 350px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      background: #007bff;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .chat-body {
+      padding: 10px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .chat-footer {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+    }
+
+    .chat-footer input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .chat-footer button {
+      margin-left: 5px;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Hospital Management</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link btn btn-danger text-white mx-2" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link btn btn-danger text-white mx-2" href="#doctors">Doctors</a></li>
+          <li class="nav-item"><a class="nav-link btn btn-danger text-white mx-2" href="#appointments">Appointments</a></li>
+          <li class="nav-item"><a class="nav-link btn btn-danger text-white mx-2" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link btn btn-danger text-white mx-2" href="contact.html">Contact Us</a></li>
+          <li class="nav-item"><button class="nav-link btn btn-danger text-white mx-2" data-bs-toggle="modal" data-bs-target="#feedbackModal">Feedback</button></li>
+          <li class="nav-item"><a class="nav-link btn btn-highlight mx-2" href="login.html">Login / Sign Up</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <h1>Welcome to Our Hospital Management System</h1>
+    <p>Providing Quality Healthcare for Everyone.</p>
+    <a href="appointment.html" class="btn-custom">Book an Appointment</a>
+  </section>
+
+  <!-- Doctors Section -->
+  <section id="doctors" class="container my-5 fade-in">
+    <h2 class="text-white">Our Doctors</h2>
+    <div id="doctors-section" class="text-white"></div>
+  </section>
+
+  <!-- Chatbox Button -->
+  <button class="chatbox-btn" onclick="toggleChatbox()">💬</button>
+
+  <!-- Chatbox -->
+  <div class="chatbox" id="chatbox">
+    <div class="chat-header">Chat with Us</div>
+    <div class="chat-body" id="chat-body">
+      <p><strong>Support:</strong> How can I assist you?</p>
+    </div>
+    <div class="chat-footer">
+      <input type="text" id="chat-input" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="feedbackModalLabel">Submit Your Feedback</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="feedback-form">
+            <div class="mb-3">
+              <label for="feedback-name" class="form-label">Full Name</label>
+              <input type="text" id="feedback-name" class="form-control" placeholder="Enter your name" required>
+            </div>
+            <div class="mb-3">
+              <label for="feedback-email" class="form-label">Email</label>
+              <input type="email" id="feedback-email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+              <label for="feedback-message" class="form-label">Your Feedback</label>
+              <textarea id="feedback-message" class="form-control" rows="4" placeholder="Enter your feedback" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Submit Feedback</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Modal -->
+  <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="notificationModalLabel">Notification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="notificationMessage">This is a notification.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="fade-in">
+    <div class="container">
+      <p>&copy; 2025 Hospital Management System. All Rights Reserved.</p>
+      <p>Contact Us: <a href="mailto:hospital@example.com" class="text-white">hospital@example.com</a> | Phone: +92 300 1234567</p>
+      <p>Address: Main Road, Lahore, Pakistan</p>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle chatbox visibility
+    function toggleChatbox() {
+      const chatbox = document.getElementById('chatbox');
+      chatbox.style.display = chatbox.style.display === 'none' || chatbox.style.display === '' ? 'flex' : 'none';
+    }
+
+    // Send message
+    function sendMessage() {
+      const message = document.getElementById('chat-input').value;
+      const chatBody = document.getElementById('chat-body');
+      if (message.trim()) {
+        const userMessage = document.createElement('p');
+        userMessage.innerHTML = `<strong>You:</strong> ${message}`;
+        chatBody.appendChild(userMessage);
+        document.getElementById('chat-input').value = '';
+      }
+    }
+  </script>
+</body>
+</html>
